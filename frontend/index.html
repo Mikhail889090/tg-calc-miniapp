@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Создать расчет</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h2>Форма расчета</h2>
+  <form id="calc-form">
+    <label>Диаметр: <input type="text" name="diameter" required></label><br>
+    <label>Толщина стенки: <input type="text" name="thickness" required></label><br>
+    <label>Глубина: <input type="number" step="0.01" name="depth" required></label><br>
+    <label>Давление: <input type="number" step="0.01" name="pressure" required></label><br>
+    <label>Система (1 или 2): <input type="number" name="system" min="1" max="2" required></label><br>
+    <label>ГНО: <input type="number" step="0.01" name="gno" required></label><br>
+    <label>Номер скважины: <input type="text" name="well_number" required></label><br>
+    <button type="submit">Рассчитать</button>
+  </form>
+
+  <div id="result" style="margin-top: 20px;"></div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const form = document.getElementById('calc-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+      data.depth = parseFloat(data.depth);
+      data.pressure = parseFloat(data.pressure);
+      data.system = parseInt(data.system);
+      data.gno = parseFloat(data.gno);
+
+      const response = await fetch('http://localhost:8000/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      document.getElementById('result').innerHTML = `Результат: <a href="${result.result_url}" target="_blank">Скачать файл</a>`;
+    });
+  </script>
+</body>
+</html>
+ (frontend HTML как ранее) 
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Создать расчет</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h2>Форма расчета</h2>
+  <form id="calc-form">
+    <label>Диаметр: <input type="text" name="diameter" required></label><br>
+    <label>Толщина стенки: <input type="text" name="thickness" required></label><br>
+    <label>Глубина: <input type="number" step="0.01" name="depth" required></label><br>
+    <label>Давление: <input type="number" step="0.01" name="pressure" required></label><br>
+    <label>Система (1 или 2): <input type="number" name="system" min="1" max="2" required></label><br>
+    <label>ГНО: <input type="number" step="0.01" name="gno" required></label><br>
+    <label>Номер скважины: <input type="text" name="well_number" required></label><br>
+    <button type="submit">Рассчитать</button>
+  </form>
+
+  <div id="result" style="margin-top: 20px;"></div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const form = document.getElementById('calc-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData);
+      data.depth = parseFloat(data.depth);
+      data.pressure = parseFloat(data.pressure);
+      data.system = parseInt(data.system);
+      data.gno = parseFloat(data.gno);
+
+      const response = await fetch('http://localhost:8000/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      document.getElementById('result').innerHTML = `Результат: <a href="${result.result_url}" target="_blank">Скачать файл</a>`;
+    });
+  </script>
+</body>
+</html>
